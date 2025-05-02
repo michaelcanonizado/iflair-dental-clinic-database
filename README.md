@@ -1,1 +1,1 @@
-# iflair-dental-clinic-database
+# CS105 Final Project
