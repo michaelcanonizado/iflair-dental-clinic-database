@@ -117,8 +117,6 @@ async function seed_database() {
 		}
 	});
 
-	return;
-
 	// Output generated rows
 	console.log(rows);
 
