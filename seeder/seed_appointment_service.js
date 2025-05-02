@@ -48,8 +48,6 @@ async function seed_database() {
 	// Output generated rows
 	console.log(rows);
 
-	return;
-
 	// Delete all existing rows in table
 	console.log(`Deleting all rows in:  ${database}.${table}...`);
 	await connection.query(`DELETE FROM ${table}`);
