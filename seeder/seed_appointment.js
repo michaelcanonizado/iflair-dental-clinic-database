@@ -3,6 +3,14 @@ const { faker } = require('@faker-js/faker');
 const fs = require('fs');
 const { choose_random_element } = require('./utils.js');
 
+const VALID_EMPLOYEES = [
+	'dentist',
+	'dental hygienist',
+	'orthodontist',
+	'oral surgeon',
+	'dental assistant',
+];
+
 async function seed_database() {
 	const database = 'iflair-dental-clinic-management-system';
 	const table = 'appointment';
@@ -18,11 +26,21 @@ async function seed_database() {
 	});
 	console.log('Connected to MySQL.');
 
+	const [patients] = await connection.execute('SELECT * FROM patient');
+	const [employees_copy] = await connection.execute(
+		'SELECT * FROM employee e JOIN occupation o WHERE e.occupation_id = o.occupation_id'
+	);
+	const employees = employees_copy.filter((employee) => {
+		if (VALID_EMPLOYEES.includes(employee.name.toLowerCase())) {
+			return employee;
+		}
+	});
+
 	// Generate rows with random data
-	const rows = [];
-	const insertCount = 0;
-	console.log(`Generating ${insertCount} random ${table} data...`);
-	for (let i = 0; i < insertCount; i++) {}
+	console.log(`Generating random ${table} data...`);
+	console.log(employees);
+
+	return;
 
 	// Output generated rows
 	console.log(rows);
