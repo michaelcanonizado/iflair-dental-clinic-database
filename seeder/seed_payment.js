@@ -5,7 +5,7 @@ const fs = require('fs');
 async function seed_database() {
 	const database = 'iflair-dental-clinic-management-system';
 	const table = 'payment';
-	const insert_query_header = `INSERT INTO ${table} (attr1, attr2) VALUES ?`;
+	const insert_query_header = `INSERT INTO ${table} (appointment_id, amount, is_paid) VALUES ?`;
 
 	// Establish SQL connection
 	const connection = await mysql.createConnection({
@@ -27,7 +27,7 @@ async function seed_database() {
 	console.log(`Generating ${insert_count} random ${table} data...`);
 	for (let i = 0; i < insert_count; i++) {
 		const appointment_id = appointments[i].appointment_id;
-		const amount = parseInt(appointments[i].total_price);
+		const amount = parseFloat(appointments[i].total_price);
 		const is_paid = appointments[i].schedule_date.getTime() < Date.now();
 
 		rows.push([appointment_id, amount, is_paid]);
@@ -35,8 +35,6 @@ async function seed_database() {
 
 	// Output generated rows
 	console.log(rows);
-
-	return;
 
 	// Delete all existing rows in table
 	console.log(`Deleting all rows in:  ${database}.${table}...`);
