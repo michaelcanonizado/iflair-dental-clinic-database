@@ -77,13 +77,21 @@ async function seed_database() {
 	const rows = [];
 	const insert_count = appointments.length;
 	console.log(`Generating ${insert_count} random ${table} data...`);
-	for (let i = 0; i < insert_count; i++) {}
+	for (let i = 0; i < insert_count; i++) {
+		const appointment_id = appointments[i].appointment_id;
 
-	console.log(appointments);
+		const number_of_medications = Math.floor(Math.random() * 4);
+		const random_medications = DENTAL_MEDICATIONS.sort(
+			() => Math.random() - 0.5
+		).slice(0, number_of_medications);
+		const description =
+			number_of_medications == 0 ? null : random_medications.join(', ');
+
+		rows.push([appointment_id, description]);
+	}
+
 	// Output generated rows
 	console.log(rows);
-
-	return;
 
 	// Delete all existing rows in table
 	console.log(`Deleting all rows in:  ${database}.${table}...`);
