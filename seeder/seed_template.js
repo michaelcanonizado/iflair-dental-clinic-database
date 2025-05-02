@@ -20,9 +20,9 @@ async function seed_database() {
 
 	// Generate rows with random data
 	const rows = [];
-	const insertCount = 0;
-	console.log(`Generating ${insertCount} random ${table} data...`);
-	for (let i = 0; i < insertCount; i++) {}
+	const insert_count = 0;
+	console.log(`Generating ${insert_count} random ${table} data...`);
+	for (let i = 0; i < insert_count; i++) {}
 
 	// Output generated rows
 	console.log(rows);
@@ -38,7 +38,7 @@ async function seed_database() {
 	console.log(`Reseted AUTO_INCREMENT to 1 in:  ${database}.${table}...`);
 
 	// Insert the generated data into the database
-	console.log(`Inserting ${insertCount} generated ${table} data...`);
+	console.log(`Inserting ${insert_count} generated ${table} data...`);
 	await connection.query(insert_query_header, [rows]);
 	console.log('Seed successful!');
 
