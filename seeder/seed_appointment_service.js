@@ -28,8 +28,17 @@ async function seed_database() {
 	appointments.forEach((appointment) => {
 		const number_of_services = Math.floor(Math.random() * 3) + 1;
 
+		const scheduled_services = [];
 		for (let i = 0; i < number_of_services; i++) {
-			const service_id = choose_random_element(1, services).service_id;
+			let service_id = choose_random_element(1, services).service_id;
+			while (
+				scheduled_services.includes(service_id) &&
+				scheduled_services.length < services.length
+			) {
+				service_id = choose_random_element(1, services).service_id;
+			}
+			scheduled_services.push(service_id);
+
 			rows.push([appointment.appointment_id, service_id]);
 
 			insert_count++;
