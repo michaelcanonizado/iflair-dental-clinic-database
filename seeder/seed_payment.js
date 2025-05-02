@@ -17,13 +17,21 @@ async function seed_database() {
 	});
 	console.log('Connected to MySQL.');
 
-	const [appointments] = await connection.execute('SELECT * FROM appointment');
+	const [appointments] = await connection.execute(
+		'SELECT aps.appointment_id, ap.schedule_date, SUM(s.price) AS total_price, COUNT(*) AS number_of_services FROM appointment_service aps JOIN appointment ap ON aps.appointment_id = ap.appointment_id JOIN service s ON aps.service_id = s.service_id GROUP BY aps.appointment_id'
+	);
 
 	// Generate rows with random data
 	const rows = [];
 	const insert_count = appointments.length;
 	console.log(`Generating ${insert_count} random ${table} data...`);
-	for (let i = 0; i < insert_count; i++) {}
+	for (let i = 0; i < insert_count; i++) {
+		const appointment_id = appointments[i].appointment_id;
+		const amount = parseInt(appointments[i].total_price);
+		const is_paid = appointments[i].schedule_date.getTime() < Date.now();
+
+		rows.push([appointment_id, amount, is_paid]);
+	}
 
 	// Output generated rows
 	console.log(rows);
