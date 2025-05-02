@@ -5,7 +5,7 @@ const { choose_random_element } = require('./utils.js');
 
 async function seed_database() {
 	const database = 'iflair-dental-clinic-management-system';
-	const table = '';
+	const table = 'appointment_service';
 	const insert_query_header = `INSERT INTO ${table} (appointment_id, service_id) VALUES ?`;
 
 	// Establish SQL connection
@@ -19,19 +19,27 @@ async function seed_database() {
 	console.log('Connected to MySQL.');
 
 	const [appointments] = await connection.execute('SELECT * FROM appointment');
+	const [services] = await connection.execute('SELECT * FROM service');
 
 	// Generate rows with random data
 	const rows = [];
-	const insert_count = 0;
-	console.log(`Generating ${insert_count} random ${table} data...`);
-	for (let i = 0; i < insert_count; i++) {}
+	let insert_count = 0;
+	console.log(`Generating random ${table} data...`);
+	appointments.forEach((appointment) => {
+		const number_of_services = Math.floor(Math.random() * 3) + 1;
 
-	console.log(appointments);
+		for (let i = 0; i < number_of_services; i++) {
+			const service_id = choose_random_element(1, services).service_id;
+			rows.push([appointment.appointment_id, service_id]);
 
-	return;
+			insert_count++;
+		}
+	});
 
 	// Output generated rows
 	console.log(rows);
+
+	return;
 
 	// Delete all existing rows in table
 	console.log(`Deleting all rows in:  ${database}.${table}...`);
