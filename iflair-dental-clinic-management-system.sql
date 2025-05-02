@@ -34,7 +34,7 @@ CREATE TABLE `appointment` (
   `schedule_date` date NOT NULL,
   `start_time` time NOT NULL,
   `duration` int(11) NOT NULL,
-  `next_sched` datetime NOT NULL,
+  `next_schedule` datetime NOT NULL,
   `appointment_status` enum('pending', 'completed', 'cancelled') NOT NULL,
   `description` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
