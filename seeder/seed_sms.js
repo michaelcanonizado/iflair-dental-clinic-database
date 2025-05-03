@@ -18,11 +18,17 @@ async function seed_database() {
 	});
 	console.log('Connected to MySQL.');
 
+	const [appointments] = await connection.execute(
+		'SELECT * FROM appointment ap JOIN patient p ON ap.patient_id = p.patient_id'
+	);
+
 	// Generate rows with random data
 	const rows = [];
-	const insert_count = 0;
+	const insert_count = appointments.length;
 	console.log(`Generating ${insert_count} random ${table} data...`);
 	for (let i = 0; i < insert_count; i++) {}
+
+	console.log(appointments);
 
 	// Output generated rows
 	console.log(rows);
