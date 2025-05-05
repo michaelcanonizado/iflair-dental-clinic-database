@@ -47,9 +47,14 @@ async function seed_database() {
 
 	// Generate rows with random data
 	const rows = [];
-	const insert_count = 0;
+	const insert_count = SMS_TEMPLATES.length;
 	console.log(`Generating ${insert_count} random ${table} data...`);
-	for (let i = 0; i < insert_count; i++) {}
+	for (let i = 0; i < insert_count; i++) {
+		const name = SMS_TEMPLATES[i].name;
+		const format = SMS_TEMPLATES[i].format;
+
+		rows.push([name, format]);
+	}
 
 	// Output generated rows
 	console.log(rows);
