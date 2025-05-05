@@ -22,18 +22,24 @@ async function seed_database() {
 		'SELECT * FROM appointment ap JOIN patient p ON ap.patient_id = p.patient_id'
 	);
 
+	const [sms_templates] = await connection.execute('SELECT * FROM sms_template');
+
 	// Generate rows with random data
 	const rows = [];
-	const insert_count = appointments.length;
+	let insert_count = 0;
 	console.log(`Generating ${insert_count} random ${table} data...`);
-	for (let i = 0; i < insert_count; i++) {
+	for (let i = 0; i < appointments.length; i++) {
 		const appointment_id = appointments[i].appointment_id;
 		const contact_no = appointments[i].contact_no;
 		const status =
 			appointments[i].schedule_date < Date.now() ? 'sent' : 'pending';
 
 		// Confirmation (1min after appointment creation)
-		let sms_template_id = 1;
+		let sms_template_id = sms_templates.find((sms_template) => {
+			if (sms_template.name == 'appointment confirmation') {
+				return sms_template;
+			}
+		});
 		let sent_at = new Date(
 			appointments[i].created_at.setMinutes(
 				appointments[i].created_at.getMinutes() + 1
@@ -41,34 +47,25 @@ async function seed_database() {
 		);
 		rows.push([appointment_id, sms_template_id, contact_no, status, sent_at]);
 
-		// Reminder (3 days before appointment date)
-		sms_template_id = 2;
+		// Reminder (24 hours before appointment date)
+		sms_template_id = sms_templates.find((sms_template) => {
+			if (sms_template.name == 'reminder') {
+				return sms_template;
+			}
+		});
 		sent_at = new Date(
 			appointments[i].schedule_date.setMinutes(
-				appointments[i].schedule_date.getDate() - 3
+				appointments[i].schedule_date.getDate() - 1
 			)
 		);
 		rows.push([appointment_id, sms_template_id, contact_no, status, sent_at]);
 
-		// Payment Reminder (small percentage not yet paid)
-		if (Math.random() < 0.2) {
-			sms_template_id = 3;
-			sent_at = new Date(
-				appointments[i].schedule_date.setMinutes(
-					appointments[i].schedule_date.getDate() - 3
-				)
-			);
-			rows.push([
-				appointment_id,
-				sms_template_id,
-				contact_no,
-				status,
-				sent_at,
-			]);
-		}
-
-		// Feedback
-		sms_template_id = 4;
+		// Feedback (schedule date + appointment duration))
+		sms_template_id = sms_templates.find((sms_template) => {
+			if (sms_template.name == 'feedback request') {
+				return sms_template;
+			}
+		});
 		const appointment_duration = appointments[i].duration;
 		sent_at = new Date(
 			appointments[i].schedule_date.setMinutes(
@@ -76,9 +73,9 @@ async function seed_database() {
 			)
 		);
 		rows.push([appointment_id, sms_template_id, contact_no, status, sent_at]);
-	}
 
-	console.log(appointments);
+		insert_count = insert_count + 3;
+	}
 
 	// Output generated rows
 	console.log(rows);
