@@ -6,7 +6,7 @@ const { choose_random_element } = require('./utils.js');
 async function seed_database() {
 	const database = 'iflair-dental-clinic-management-system';
 	const table = 'sms';
-	const insert_query_header = `INSERT INTO ${table} (appointment_id, message, contact_no, sms_status, sent_at) VALUES ?`;
+	const insert_query_header = `INSERT INTO ${table} (appointment_id, sms_template_id, contact_no, status, sent_at) VALUES ?`;
 
 	// Establish SQL connection
 	const connection = await mysql.createConnection({
@@ -26,7 +26,57 @@ async function seed_database() {
 	const rows = [];
 	const insert_count = appointments.length;
 	console.log(`Generating ${insert_count} random ${table} data...`);
-	for (let i = 0; i < insert_count; i++) {}
+	for (let i = 0; i < insert_count; i++) {
+		const appointment_id = appointments[i].appointment_id;
+		const contact_no = appointments[i].contact_no;
+		const status =
+			appointments[i].schedule_date < Date.now() ? 'sent' : 'pending';
+
+		// Confirmation (1min after appointment creation)
+		let sms_template_id = 1;
+		let sent_at = new Date(
+			appointments[i].created_at.setMinutes(
+				appointments[i].created_at.getMinutes() + 1
+			)
+		);
+		rows.push([appointment_id, sms_template_id, contact_no, status, sent_at]);
+
+		// Reminder (3 days before appointment date)
+		sms_template_id = 2;
+		sent_at = new Date(
+			appointments[i].schedule_date.setMinutes(
+				appointments[i].schedule_date.getDate() - 3
+			)
+		);
+		rows.push([appointment_id, sms_template_id, contact_no, status, sent_at]);
+
+		// Payment Reminder (small percentage not yet paid)
+		if (Math.random() < 0.2) {
+			sms_template_id = 3;
+			sent_at = new Date(
+				appointments[i].schedule_date.setMinutes(
+					appointments[i].schedule_date.getDate() - 3
+				)
+			);
+			rows.push([
+				appointment_id,
+				sms_template_id,
+				contact_no,
+				status,
+				sent_at,
+			]);
+		}
+
+		// Feedback
+		sms_template_id = 4;
+		const appointment_duration = appointments[i].duration;
+		sent_at = new Date(
+			appointments[i].schedule_date.setMinutes(
+				appointments[i].schedule_date.getMinutes() + appointment_duration
+			)
+		);
+		rows.push([appointment_id, sms_template_id, contact_no, status, sent_at]);
+	}
 
 	console.log(appointments);
 
