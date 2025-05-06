@@ -85,8 +85,8 @@ const OCCUPATIONS = [
 
 async function seed_database() {
 	const database = 'iflair-dental-clinic-management-system';
-	const table = '';
-	const insert_query_header = `INSERT INTO ${table} (attr1, attr2) VALUES ?`;
+	const table = 'occupation';
+	const insert_query_header = `INSERT INTO ${table} (name, description) VALUES ?`;
 
 	// Establish SQL connection
 	const connection = await mysql.createConnection({
@@ -100,9 +100,14 @@ async function seed_database() {
 
 	// Generate rows with random data
 	const rows = [];
-	const insert_count = 0;
+	const insert_count = OCCUPATIONS.length;
 	console.log(`Generating ${insert_count} random ${table} data...`);
-	for (let i = 0; i < insert_count; i++) {}
+	for (let i = 0; i < insert_count; i++) {
+		const name = OCCUPATIONS[i].name;
+		const description = OCCUPATIONS[i].description;
+
+		rows.push([name, description]);
+	}
 
 	// Output generated rows
 	console.log(rows);
