@@ -39,7 +39,7 @@ async function seed_database() {
 			if (sms_template.name == 'appointment confirmation') {
 				return sms_template;
 			}
-		});
+		}).sms_template_id;
 		let sent_at = new Date(
 			appointments[i].created_at.setMinutes(
 				appointments[i].created_at.getMinutes() + 1
@@ -52,7 +52,7 @@ async function seed_database() {
 			if (sms_template.name == 'reminder') {
 				return sms_template;
 			}
-		});
+		}).sms_template_id;
 		sent_at = new Date(
 			appointments[i].schedule_date.setMinutes(
 				appointments[i].schedule_date.getDate() - 1
@@ -65,7 +65,7 @@ async function seed_database() {
 			if (sms_template.name == 'feedback request') {
 				return sms_template;
 			}
-		});
+		}).sms_template_id;
 		const appointment_duration = appointments[i].duration;
 		sent_at = new Date(
 			appointments[i].schedule_date.setMinutes(
