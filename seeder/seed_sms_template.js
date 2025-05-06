@@ -13,20 +13,8 @@ const SMS_TEMPLATES = [
 		format: 'iFlair Dental: Friendly reminder! Your dental appointment is tomorrow, {Date} at {Time}. Kindly arrive 10 mins early. Cancel? Call {Clinic Number}.\n\nThis is an auto-generated text. For inquiries, please call 1800-FLAIR-DC (1800-352-4732) or email us at info@iflairdental.com. For appointment scheduling, email at appointments@iflairdental.com',
 	},
 	{
-		name: 'promotional offer',
-		format: 'iFlair Dental: Smile brighter! Get 20% off teeth whitening until {Date}. Book now: {Booking Link}. Offer code: FLAIR20.\n\nThis is an auto-generated text. For inquiries, please call 1800-FLAIR-DC (1800-352-4732) or email us at info@iflairdental.com. For appointment scheduling, email at appointments@iflairdental.com',
-	},
-	{
-		name: 'birthday greeting',
-		format: 'iFlair Dental: Happy Birthday, {Patient Name}! Enjoy a free dental check-up this month. Book now: {Clinic Number}.\n\nThis is an auto-generated text. For inquiries, please call 1800-FLAIR-DC (1800-352-4732) or email us at info@iflairdental.com. For appointment scheduling, email at appointments@iflairdental.com',
-	},
-	{
 		name: 'feedback request',
 		format: 'iFlair Dental: How was your visit? Rate us: {Rating Link}. Your feedback helps us improve!\n\nThis is an auto-generated text. For inquiries, please call 1800-FLAIR-DC (1800-352-4732) or email us at info@iflairdental.com. For appointment scheduling, email at appointments@iflairdental.com',
-	},
-	{
-		name: 'new patient',
-		format: 'iFlair Dental: Welcome, {Patient Name}! Your oral health is our priority. Download your patient forms here: {Form Link}.\n\nThis is an auto-generated text. For inquiries, please call 1800-FLAIR-DC (1800-352-4732) or email us at info@iflairdental.com. For appointment scheduling, email at appointments@iflairdental.com',
 	},
 ];
 
