@@ -180,8 +180,8 @@ const BARANGAYS = [
 
 async function seed_database() {
 	const database = 'iflair-dental-clinic-management-system';
-	const table = 'patient';
-	const insert_query_header = `INSERT INTO ${table} (first_name, middle_name, last_name, gender, contact_no, date_of_birth, age, religion, nationality, occupation, guardian_name, guardian_occupation, street, province, municipality, barangay, zip_code, civil_status) VALUES ?`;
+	const table = 'employee';
+	const insert_query_header = `INSERT INTO ${table} (occupation_id, first_name, last_name, middle_name, date_of_birth, age, gender, street, province, municipality, barangay, zip_code, email, contact_no) VALUES ?`;
 
 	// Establish SQL connection
 	const connection = await mysql.createConnection({
@@ -193,65 +193,78 @@ async function seed_database() {
 	});
 	console.log('Connected to MySQL.');
 
+	const [occupations] = await connection.execute('SELECT * FROM occupation');
+
 	// Generate rows with random data
 	const rows = [];
-	const insertCount = 50;
-	console.log(`Generating ${insertCount} random ${table} data...`);
-	for (let i = 0; i < insertCount; i++) {
-		const gender = choose_random_element(1, GENDERS);
+	let insert_count = 0;
+	console.log(`Generating random ${table} data...`);
+	for (let i = 0; i < occupations.length; i++) {
+		let num_per_occupation_to_insert = 2;
+		if (DENTAL_EMPLOYEES.includes(occupations[i].name.toLocaleLowerCase())) {
+			num_per_occupation_to_insert = 5;
+		}
 
-		const first_name =
-			gender == 'male'
-				? choose_random_element(1, MALE_FIRST_NAMES)
-				: choose_random_element(1, FEMALE_FIRST_NAMES);
+		for (let j = 0; j < num_per_occupation_to_insert; j++) {
+			const gender = choose_random_element(1, GENDERS);
 
-		const middle_name = choose_random_element(0.6, MIDDLE_NAMES);
+			const first_name =
+				gender == 'male'
+					? choose_random_element(1, MALE_FIRST_NAMES)
+					: choose_random_element(1, FEMALE_FIRST_NAMES);
 
-		const last_name = choose_random_element(1, LAST_NAMES);
+			const middle_name = choose_random_element(0.6, MIDDLE_NAMES);
 
-		const contact_no = faker.phone.number({ style: 'international' });
+			const last_name = choose_random_element(1, LAST_NAMES);
 
-		const date_of_birth = faker.date.birthdate({ min: 5, max: 90, mode: 'age' });
+			const contact_no = faker.phone.number({ style: 'international' });
 
-		const age = calculate_age(date_of_birth);
+			const date_of_birth = faker.date.birthdate({
+				min: 5,
+				max: 90,
+				mode: 'age',
+			});
 
-		const street = choose_random_element(0.3, [
-			faker.location.secondaryAddress(),
-		]);
+			const age = calculate_age(date_of_birth);
 
-		const province = choose_random_element(1, PROVINCES);
+			const street = choose_random_element(0.3, [
+				faker.location.secondaryAddress(),
+			]);
 
-		const municipality = choose_random_element(1, MUNICIPALITIES[province]);
+			const province = choose_random_element(1, PROVINCES);
 
-		const barangay = choose_random_element(1, BARANGAYS);
+			const municipality = choose_random_element(1, MUNICIPALITIES[province]);
 
-		const zip_code = faker.number.int({
-			min: 4400,
-			max: 4700,
-		});
+			const barangay = choose_random_element(1, BARANGAYS);
 
-		const email = `${first_name}${last_name}@gmail.com`.toLocaleLowerCase();
+			const zip_code = faker.number.int({
+				min: 4400,
+				max: 4700,
+			});
 
-		rows.push([
-			first_name,
-			middle_name,
-			last_name,
-			gender,
-			contact_no,
-			date_of_birth,
-			age,
-			religion,
-			nationality,
-			occupation,
-			guardian_name,
-			guardian_occupation,
-			street,
-			province,
-			municipality,
-			barangay,
-			zip_code,
-			civil_status,
-		]);
+			const email = `${first_name}${last_name}@gmail.com`.toLocaleLowerCase();
+
+			const occupation_id = occupations[i].occupation_id;
+
+			rows.push([
+				occupation_id,
+				first_name,
+				last_name,
+				middle_name,
+				date_of_birth,
+				age,
+				gender,
+				street,
+				province,
+				municipality,
+				barangay,
+				zip_code,
+				email,
+				contact_no,
+			]);
+
+			insert_count++;
+		}
 	}
 
 	// Output generated rows
@@ -268,7 +281,7 @@ async function seed_database() {
 	console.log(`Reseted AUTO_INCREMENT to 1 in:  ${database}.${table}...`);
 
 	// Insert the generated data into the database
-	console.log(`Inserting ${insertCount} generated ${table} data...`);
+	console.log(`Inserting ${insert_count} generated ${table} data...`);
 	await connection.query(insert_query_header, [rows]);
 	console.log('Seed successful!');
 

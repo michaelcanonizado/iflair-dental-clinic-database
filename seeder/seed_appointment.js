@@ -8,7 +8,6 @@ const VALID_EMPLOYEES = [
 	'dental hygienist',
 	'orthodontist',
 	'oral surgeon',
-	'dental assistant',
 ];
 
 async function seed_database() {
