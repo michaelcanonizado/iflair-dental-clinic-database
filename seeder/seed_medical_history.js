@@ -293,9 +293,14 @@ async function seed_database() {
 	});
 	console.log('Connected to MySQL.');
 
+	let [[number_of_patients]] = await connection.execute(
+		'SELECT COUNT(*) FROM patient'
+	);
+	number_of_patients = number_of_patients['COUNT(*)'];
+
 	// Generate rows with random data
 	const rows = [];
-	const insertCount = 50;
+	const insertCount = number_of_patients;
 	console.log(`Generating ${insertCount} random ${table} data...`);
 	for (let i = 0; i < insertCount; i++) {
 		const chronic_illnesses = choose_random_element(0.3, CHRONIC_ILLNESSES);
