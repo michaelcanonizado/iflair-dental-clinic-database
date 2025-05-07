@@ -41,26 +41,16 @@ async function seed_database() {
 	const rows = [];
 	let insert_count = 0;
 	patients.forEach((patient) => {
-		const number_of_schedules = Math.floor(Math.random() * 10) + 1;
-		const random_year = faker.number.int({ min: 2020, max: 2025 });
-		const is_within_the_year_customer = Math.random() < 0.5 ? true : false;
+		const number_of_schedules = Math.floor(Math.random() * 15) + 1;
 
 		for (let i = 0; i < number_of_schedules; i++) {
 			const patient_id = patient.patient_id;
 			const employee_id = choose_random_element(1, employees).employee_id;
 
-			const year_offset = Math.floor(Math.random() * 3) + 1;
-			const schedule_date = faker.date.between(
-				is_within_the_year_customer
-					? {
-							from: `${random_year}-01-01T00:00:00.000Z`,
-							to: `${random_year}-12-31T00:00:00.000Z`,
-					  }
-					: {
-							from: `${random_year - year_offset}-01-01T00:00:00.000Z`,
-							to: `${random_year}-12-31T00:00:00.000Z`,
-					  }
-			);
+			const schedule_date = faker.date.between({
+				from: new Date(patient.created_at),
+				to: new Date(new Date().getFullYear(), 11, 31),
+			});
 
 			const start_time = faker.date
 				.between({
@@ -76,17 +66,11 @@ async function seed_database() {
 				multipleOf: 30,
 			});
 
-			const next_schedule = faker.date.between(
-				is_within_the_year_customer
-					? {
-							from: `${random_year}-01-01T00:00:00.000Z`,
-							to: `${random_year}-12-31T00:00:00.000Z`,
-					  }
-					: {
-							from: `${random_year - year_offset}-01-01T00:00:00.000Z`,
-							to: `${random_year}-12-31T00:00:00.000Z`,
-					  }
-			);
+			const temp_schedule_date = new Date(schedule_date);
+			const next_schedule = faker.date.between({
+				from: temp_schedule_date.setMonth(schedule_date.getMonth() + 3),
+				to: temp_schedule_date.setMonth(schedule_date.getMonth() + 12),
+			});
 
 			const is_cancelled = Math.random() < 0.15;
 			let appointment_status = null;
