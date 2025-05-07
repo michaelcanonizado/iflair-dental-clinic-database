@@ -194,7 +194,7 @@ const CIVIL_STATUSES = ['single', 'married', 'divorced', 'widower/widowed'];
 async function seed_database() {
 	const database = 'iflair-dental-clinic-management-system';
 	const table = 'patient';
-	const insert_query_header = `INSERT INTO ${table} (first_name, middle_name, last_name, gender, contact_no, date_of_birth, age, religion, nationality, occupation, guardian_name, guardian_occupation, street, province, municipality, barangay, zip_code, civil_status) VALUES ?`;
+	const insert_query_header = `INSERT INTO ${table} (first_name, middle_name, last_name, gender, contact_no, date_of_birth, age, religion, nationality, occupation, guardian_name, guardian_occupation, street, province, municipality, barangay, zip_code, civil_status, created_at) VALUES ?`;
 
 	// Establish SQL connection
 	const connection = await mysql.createConnection({
@@ -208,7 +208,7 @@ async function seed_database() {
 
 	// Generate rows with random data
 	const rows = [];
-	const insertCount = 50;
+	const insertCount = 1000;
 	console.log(`Generating ${insertCount} random ${table} data...`);
 	for (let i = 0; i < insertCount; i++) {
 		const gender = choose_random_element(1, GENDERS);
@@ -274,6 +274,13 @@ async function seed_database() {
 		const civil_status =
 			age > 30 ? choose_random_element(1, CIVIL_STATUSES) : 'single';
 
+		const LOWER_CREATED_AT_LIMIT = new Date(2015, 0, 1);
+		const UPPER_CREATED_AT_LIMIT = new Date();
+		const created_at = faker.date.between({
+			from: LOWER_CREATED_AT_LIMIT,
+			to: UPPER_CREATED_AT_LIMIT,
+		});
+
 		rows.push([
 			first_name,
 			middle_name,
@@ -293,6 +300,7 @@ async function seed_database() {
 			barangay,
 			zip_code,
 			civil_status,
+			created_at,
 		]);
 	}
 
