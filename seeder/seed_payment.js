@@ -5,7 +5,7 @@ const fs = require('fs');
 async function seed_database() {
 	const database = 'iflair-dental-clinic-management-system';
 	const table = 'payment';
-	const insert_query_header = `INSERT INTO ${table} (appointment_id, amount, is_paid) VALUES ?`;
+	const insert_query_header = `INSERT INTO ${table} (appointment_id, amount, is_paid, created_at) VALUES ?`;
 
 	// Establish SQL connection
 	const connection = await mysql.createConnection({
@@ -29,8 +29,9 @@ async function seed_database() {
 		const appointment_id = appointments[i].appointment_id;
 		const amount = parseFloat(appointments[i].total_price);
 		const is_paid = appointments[i].schedule_date.getTime() < Date.now();
+		const created_at = appointments[i].schedule_date;
 
-		rows.push([appointment_id, amount, is_paid]);
+		rows.push([appointment_id, amount, is_paid, created_at]);
 	}
 
 	// Output generated rows
