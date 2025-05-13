@@ -1,0 +1,69 @@
+NUMBA WAN:
+
+SELECT 
+    p.first_name,
+    p.last_name,
+    COUNT(a.appointment_id) AS appointment_count
+FROM 
+    patient p
+JOIN 
+    appointment a ON p.patient_id = a.patient_id
+GROUP BY 
+    p.patient_id, p.first_name, p.last_name
+HAVING 
+    COUNT(a.appointment_id) > 1
+ORDER BY 
+    appointment_count DESC;
+
+
+NUMBA TWO:
+
+SELECT 
+    p.first_name,
+    p.last_name,
+    SUM(py.amount) AS total_payments
+FROM 
+    patient p
+JOIN 
+    appointment a ON p.patient_id = a.patient_id
+JOIN 
+    payment py ON a.appointment_id = py.appointment_id
+WHERE 
+    a.schedule_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+    AND py.is_paid = 1
+GROUP BY 
+    p.patient_id, p.first_name, p.last_name
+ORDER BY 
+    total_payments DESC;
+
+
+NUMBA THREE:
+
+SELECT 
+    p.first_name,
+    p.last_name,
+    pr.description AS prescribed_medications
+FROM 
+    patient p
+JOIN 
+    appointment a ON p.patient_id = a.patient_id
+JOIN 
+    prescription pr ON a.appointment_id = pr.appointment_id
+WHERE 
+    pr.description IS NOT NULL
+    AND (
+        pr.description LIKE '%Hydrocodone/Acetaminophen%' OR
+        pr.description LIKE '%Codeine%' OR
+        pr.description LIKE '%Oxycodone/Acetaminophen%' OR
+        pr.description LIKE '%Tramadol%' OR
+        pr.description LIKE '%Alprazolam%' OR
+        pr.description LIKE '%Midazolam%' OR
+        pr.description LIKE '%Diazepam%' OR
+        pr.description LIKE '%Dexamethasone%' OR
+        pr.description LIKE '%Prednisone%'
+
+    )
+ORDER BY 
+    p.last_name, p.first_name;
+
+
